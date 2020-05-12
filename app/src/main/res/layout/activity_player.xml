@@ -4,12 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
+
     android:background="@drawable/background"
     tools:context=".PlayerActivity">
-=======
-    tools:context=".player">
->>>>>>> 4ed3c81e2028a8dd1a2f78847f78e5847a448e59
 
     <Button
         android:id="@+id/button"
@@ -69,8 +66,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-<<<<<<< HEAD
 
-=======
->>>>>>> 4ed3c81e2028a8dd1a2f78847f78e5847a448e59
 </androidx.constraintlayout.widget.ConstraintLayout>
