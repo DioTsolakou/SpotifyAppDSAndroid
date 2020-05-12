@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
 
     android:background="@drawable/background"
-    tools:context=".PlayerActivity">
+    tools:context="spotifyPackage.Activities.PlayerActivity">
 
     <Button
         android:id="@+id/button"
