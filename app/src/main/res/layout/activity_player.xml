@@ -9,7 +9,7 @@
     tools:context="spotifyPackage.Activities.PlayerActivity">
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/play_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/playbutton"
@@ -22,20 +22,20 @@
         app:layout_constraintVertical_bias="0.791" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/previous_button"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/previousbutton"
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintEnd_toStartOf="@+id/play_button"
         app:layout_constraintHorizontal_bias="0.71"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.781" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/next_button"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/nextbutton"
@@ -43,12 +43,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.29"
-        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintStart_toEndOf="@+id/play_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.781" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/back_to_search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/gobackbutton"
