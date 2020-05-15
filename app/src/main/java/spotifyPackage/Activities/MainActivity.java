@@ -6,13 +6,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.ArrayList;
-
 import spotifyPackage.R;
-
+import spotifyPackage.Utilities.Utilities;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -50,8 +47,7 @@ public class MainActivity extends AppCompatActivity {
         places.add("Córdoba");
 
 
-        //Toast.makeText(MainActivity.this, Utilities.findAllArtists().get(1),
-        //        Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, Utilities.findArtistsAll().get(1), Toast.LENGTH_SHORT).show();
 
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, places);
         artistList.setAdapter(myAdapter);

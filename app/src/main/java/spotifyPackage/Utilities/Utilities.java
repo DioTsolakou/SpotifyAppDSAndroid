@@ -8,14 +8,14 @@ import java.util.ArrayList;
 
 public class Utilities
 {
-    public static ArrayList<String> findAllArtists() {
+    public static ArrayList<String> findArtistsAll() {
         ArrayList<String> artists = new ArrayList<>();
         artists.addAll(findArtists("spotifyPackage\\Publisher\\A-K"));
         artists.addAll(findArtists("spotifyPackage\\Publisher\\L-Z"));
         return artists;
     }
 
-    static ArrayList<String> findArtists(String dir) {
+    private static ArrayList<String> findArtists(String dir) {
         ArrayList<String> list = new ArrayList<>();
         File[] listOfFiles = (new File(dir).listFiles());
         for (File f: listOfFiles) {
@@ -34,7 +34,7 @@ public class Utilities
         return list;
     }
 
-    ArrayList<String> findArtistSongs(String artistName) {
+    public static ArrayList<String> findArtistSongs(String artistName) {
         ArrayList<String> songs = new ArrayList<>();
         String dir, artist, title;
         if (Character.toUpperCase(artistName.charAt(0)) <= 'K')
