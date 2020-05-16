@@ -6,6 +6,8 @@ import spotifyPackage.R;
 
 public class PlayerActivity extends AppCompatActivity {
 
+    private String songName = getIntent().getStringExtra("Song_Name");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

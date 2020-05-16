@@ -1,5 +1,6 @@
 package spotifyPackage.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,15 +12,14 @@ import java.util.ArrayList;
 import spotifyPackage.R;
 import spotifyPackage.Utilities.Utilities;
 
-
 public class MainActivity extends AppCompatActivity {
 
-
     private ListView artistList;
+    private String artistName;
     private AdapterView.OnItemClickListener listClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String artistName = (String) artistList.getItemAtPosition(position);
+            artistName = (String) artistList.getItemAtPosition(position);
             Toast.makeText(MainActivity.this, artistName + " was selected",
                     Toast.LENGTH_SHORT).show();
         }
@@ -52,8 +52,11 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, places);
         artistList.setAdapter(myAdapter);
         artistList.setOnItemClickListener(listClick);
-    }
 
+        Intent intent = new Intent(getBaseContext(), ArtistActivity.class);
+        intent.putExtra("Artist_Name", artistName);
+        startActivity(intent);
+    }
 
     @Override
     protected void onPause()
