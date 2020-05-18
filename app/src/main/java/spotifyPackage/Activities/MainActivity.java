@@ -9,21 +9,19 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.ArrayList;
-
 import spotifyPackage.R;
 
+import static spotifyPackage.Utilities.Utilities.findAllArtists;
 
 
 public class MainActivity extends AppCompatActivity {
-
-
+    private String selectedArtist;
     private ListView artistList;
     private AdapterView.OnItemClickListener listClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String artistName = (String) artistList.getItemAtPosition(position);
-            Toast.makeText(MainActivity.this, artistName + " was selected",
+            selectedArtist = (String) artistList.getItemAtPosition(position);
+            Toast.makeText(MainActivity.this, selectedArtist + " was selected",
                     Toast.LENGTH_SHORT).show();
         }
     };
@@ -36,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         artistList = findViewById(R.id.listView);
 
         //test arraylist , will be replaced with artist's arraylist
+        /*
         ArrayList<String> places = new ArrayList<String>();
         places.add("Buenos Aires");
         places.add("Córdoba");
@@ -49,19 +48,19 @@ public class MainActivity extends AppCompatActivity {
         places.add("Buenos Aires");
         places.add("Córdoba");
 
+         */
 
-        //Toast.makeText(MainActivity.this, Utilities.findAllArtists().get(1),
-        //        Toast.LENGTH_SHORT).show();
 
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, places);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, findAllArtists());
         artistList.setAdapter(myAdapter);
         artistList.setOnItemClickListener(listClick);
+
+        //TextView header = findViewById(R.id.header);
+        // header.setText("Select song");
     }
 
-
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
     }
 }

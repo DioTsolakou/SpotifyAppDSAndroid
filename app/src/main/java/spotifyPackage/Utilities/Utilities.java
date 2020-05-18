@@ -1,21 +1,48 @@
 package spotifyPackage.Utilities;
 
+import android.util.Log;
+
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Utilities
 {
     public static ArrayList<String> findAllArtists() {
         ArrayList<String> artists = new ArrayList<>();
-        artists.addAll(findArtists("spotifyPackage\\Publisher\\A-K"));
-        artists.addAll(findArtists("spotifyPackage\\Publisher\\L-Z"));
+        Log.d("DEBUG", "STARTING TO READ FILE");
+        //Get the text file
+        File file = new File("Publisher/Α-Κ/A-K.txt");
+
+        //Read text from file
+        StringBuilder text = new StringBuilder();
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                //artists.add(text.toString());
+                Log.d("DEBUG", "ARTIST" + line + "ADDED");
+                text.append('\n');
+            }
+            br.close();
+        } catch (IOException e) {
+            Log.d("DEBUG", "EXEPTION");
+            //You'll need to add proper error handling here
+        }
+        //artists.addAll(findArtists("spotifyPackage\\Publisher\\A-K"));
+        //artists.addAll(findArtists("spotifyPackage\\Publisher\\L-Z"));
         return artists;
     }
 
-    static ArrayList<String> findArtists(String dir) {
+    ArrayList<String> findArtists(String dir) {
         ArrayList<String> list = new ArrayList<>();
         File[] listOfFiles = (new File(dir).listFiles());
         for (File f: listOfFiles) {
