@@ -67,7 +67,7 @@ public class Utilities
         return songs;
     }
 
-    public static void joinChunks(String songName)
+    private static void joinChunks(String songName)
     {
         String dir = "spotifyPackage\\Consumer\\";
         File[] listOfFiles = new File(dir).listFiles();
@@ -97,7 +97,7 @@ public class Utilities
             }
         }
 
-        try (OutputStream fos = new FileOutputStream("spotifyPackage\\Consumer\\" + songName + ".mp3")) {
+        try (OutputStream fos = new FileOutputStream("spotifyPackage\\Consumer\\" + songName + "_final.mp3")) {
             fos.write(bytes);
             fos.close();
             System.out.println("Music fragment received and stored");
@@ -107,11 +107,12 @@ public class Utilities
         }
     }
 
-    public void playSong(String songName)
+    public static void playSong(String songName)
     {
+        joinChunks(songName);
         MediaPlayer mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource("spotifyPackage\\Consumer\\" + songName + ".mp3");
+            mediaPlayer.setDataSource("spotifyPackage\\Consumer\\" + songName + "_final.mp3");
             mediaPlayer.start();
         } catch (IOException e) {
             e.printStackTrace();

@@ -16,8 +16,8 @@ public class PlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        Utilities utilities = new Utilities();
-        utilities.playChunks(songName);
+        //Utilities utilities = new Utilities();
+        Utilities.playSong(songName);
     }
 
     @Override
