@@ -5,12 +5,10 @@ import android.media.MediaPlayer;
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
+
 
 public class Utilities
 {
@@ -73,45 +71,50 @@ public class Utilities
     {
         String dir = "spotifyPackage\\Consumer\\";
         File[] listOfFiles = new File(dir).listFiles();
-        int chunkNumber;
         chunks.clear();
 
+        int size = 0;
         for (File f : listOfFiles) {
             if (f.getName().contains(songName))
             {
                 chunks.add(f);
+                size += f.length();
             }
         }
 
-        Collections.sort(chunks, new Comparator<String>() {
-            @Override
-            public int compare(File o1, File o2) {
-                return o1.getName().substring(songName.length() - 1, o1.getName().lastIndexOf('.').compareTo(o2.getName().substring(songName.length() - 1, o2.getName().lastIndexOf('.'))));
-            }
-        });
-    }
-
-    public static int getChunkNumber(File file)
-    {
-        int chunkNumber = Integer.parseInt(file.getName().substring(songName.length() - 1, file.getName().lastIndexOf('.')));
-        return chunkNumber;
-    }
-
-    public void playChunks(String songName)
-    {
-        MediaPlayer mediaPlayer = new MediaPlayer();
-
-        int chunkCounter = findChunks(songName);
-
-        for (int i = 0; i < chunkCounter; i++)
-        {
+        Collections.sort(chunks, new ChunkComparator());
+        FileInputStream fis;
+        int offset = 0;
+        byte[] bytes = new byte[size];
+        for (File f: chunks){
             try {
-                mediaPlayer.setDataSource("spotifyPackage\\Consumer\\" + songName + i + ".mp3");
-                mediaPlayer.start();
-                wait(mediaPlayer.getDuration());
-            } catch (IOException | InterruptedException e) {
+                fis = new FileInputStream(f);
+                fis.read(bytes, offset, (int)f.length());
+                offset += f.length();
+                fis.close();
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        try (OutputStream fos = new FileOutputStream("spotifyPackage\\Consumer\\" + songName + ".mp3")) {
+            fos.write(bytes);
+            fos.close();
+            System.out.println("Music fragment received and stored");
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void playSong(String songName)
+    {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource("spotifyPackage\\Consumer\\" + songName + ".mp3");
+            mediaPlayer.start();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
