@@ -1,13 +1,21 @@
 package spotifyPackage.Utilities;
 
+import android.media.MediaPlayer;
+
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Utilities
 {
+    public static ArrayList<File> chunks = new ArrayList<>();
+
     public static ArrayList<String> findArtistsAll() {
         ArrayList<String> artists = new ArrayList<>();
         artists.addAll(findArtists("spotifyPackage\\Publisher\\A-K"));
@@ -59,5 +67,51 @@ public class Utilities
         }
 
         return songs;
+    }
+
+    public static void joinChunks(String songName)
+    {
+        String dir = "spotifyPackage\\Consumer\\";
+        File[] listOfFiles = new File(dir).listFiles();
+        int chunkNumber;
+        chunks.clear();
+
+        for (File f : listOfFiles) {
+            if (f.getName().contains(songName))
+            {
+                chunks.add(f);
+            }
+        }
+
+        Collections.sort(chunks, new Comparator<String>() {
+            @Override
+            public int compare(File o1, File o2) {
+                return o1.getName().substring(songName.length() - 1, o1.getName().lastIndexOf('.').compareTo(o2.getName().substring(songName.length() - 1, o2.getName().lastIndexOf('.'))));
+            }
+        });
+    }
+
+    public static int getChunkNumber(File file)
+    {
+        int chunkNumber = Integer.parseInt(file.getName().substring(songName.length() - 1, file.getName().lastIndexOf('.')));
+        return chunkNumber;
+    }
+
+    public void playChunks(String songName)
+    {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+
+        int chunkCounter = findChunks(songName);
+
+        for (int i = 0; i < chunkCounter; i++)
+        {
+            try {
+                mediaPlayer.setDataSource("spotifyPackage\\Consumer\\" + songName + i + ".mp3");
+                mediaPlayer.start();
+                wait(mediaPlayer.getDuration());
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
