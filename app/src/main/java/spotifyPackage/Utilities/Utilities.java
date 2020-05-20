@@ -75,6 +75,7 @@ public class Utilities
 
         int size = 0;
         for (File f : listOfFiles) {
+            if (f.getName().equals(songName + "_final.mp3")) return;
             if (f.getName().contains(songName))
             {
                 chunks.add(f);
@@ -99,8 +100,7 @@ public class Utilities
 
         try (OutputStream fos = new FileOutputStream("spotifyPackage\\Consumer\\" + songName + "_final.mp3")) {
             fos.write(bytes);
-            fos.close();
-            System.out.println("Music fragment received and stored");
+            //fos.close();
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -117,5 +117,4 @@ public class Utilities
             e.printStackTrace();
         }
     }
-
 }
