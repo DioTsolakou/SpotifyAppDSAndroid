@@ -21,8 +21,10 @@ public class ArtistActivity extends AppCompatActivity {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             songName = (String) songList.getItemAtPosition(position);
-            Toast.makeText(ArtistActivity.this, songName + " was selected",
-                    Toast.LENGTH_SHORT).show();
+            //Toast.makeText(ArtistActivity.this, songName + " was selected", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
+            intent.putExtra("Song_Name", songName);
+            startActivity(intent);
         }
     };
 
@@ -35,13 +37,9 @@ public class ArtistActivity extends AppCompatActivity {
 
         Toast.makeText(ArtistActivity.this, Utilities.findArtistSongs(artistName).get(1), Toast.LENGTH_SHORT).show();
 
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Utilities.findArtistSongs(artistName));
         songList.setAdapter(myAdapter);
         songList.setOnItemClickListener(listClick);
-
-        Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
-        intent.putExtra("Song_Name", songName);
-        startActivity(intent);
     }
 
     @Override
