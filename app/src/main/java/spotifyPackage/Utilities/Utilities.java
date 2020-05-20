@@ -107,15 +107,15 @@ public class Utilities
         }
     }
 
-    public static void playSong(String songName)
+    public static void playSong(MediaPlayer mp, String songName)
     {
         joinChunks(songName);
-        MediaPlayer mediaPlayer = new MediaPlayer();
         try {
-            mediaPlayer.setDataSource("spotifyPackage\\Consumer\\" + songName + "_final.mp3");
-            mediaPlayer.start();
+            mp.setDataSource("spotifyPackage\\Consumer\\" + songName + "_final.mp3");
+            mp.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }
