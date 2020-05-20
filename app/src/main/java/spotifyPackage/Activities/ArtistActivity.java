@@ -15,12 +15,11 @@ import spotifyPackage.Utilities.Utilities;
 public class ArtistActivity extends AppCompatActivity {
 
     private ListView songList;
-    private String songName;
     private String artistName = getIntent().getStringExtra("Artist_Name");
     private AdapterView.OnItemClickListener listClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            songName = (String) songList.getItemAtPosition(position);
+            String songName = (String) songList.getItemAtPosition(position);
             //Toast.makeText(ArtistActivity.this, songName + " was selected", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
             intent.putExtra("Song_Name", songName);
