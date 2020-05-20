@@ -33,9 +33,7 @@ public class ArtistActivity extends AppCompatActivity {
         setContentView(R.layout.activity_artist);
 
         songList = findViewById(R.id.songListView);
-
-        Toast.makeText(ArtistActivity.this, Utilities.findArtistSongs(artistName).get(1), Toast.LENGTH_SHORT).show();
-
+        //Toast.makeText(ArtistActivity.this, Utilities.findArtistSongs(artistName).get(1), Toast.LENGTH_SHORT).show();
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Utilities.findArtistSongs(artistName));
         songList.setAdapter(myAdapter);
         songList.setOnItemClickListener(listClick);

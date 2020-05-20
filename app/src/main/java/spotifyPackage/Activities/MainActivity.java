@@ -32,23 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         artistList = findViewById(R.id.listView);
-
-        //test arraylist , will be replaced with artist's arraylist
-        ArrayList<String> places = new ArrayList<String>();
-        places.add("Buenos Aires");
-        places.add("Córdoba");
-        places.add("La Plata");
-        places.add("Buenos Aires");
-        places.add("Córdoba");
-        places.add("La Plata");
-        places.add("Buenos Aires");
-        places.add("Córdoba");
-        places.add("La Plata");
-        places.add("Buenos Aires");
-        places.add("Córdoba");
-
-        Toast.makeText(MainActivity.this, Utilities.findArtistsAll().get(1), Toast.LENGTH_SHORT).show();
-
+        //Toast.makeText(MainActivity.this, Utilities.findArtistsAll().get(1), Toast.LENGTH_SHORT).show();
         ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Utilities.findArtistsAll());
         artistList.setAdapter(myAdapter);
         artistList.setOnItemClickListener(listClick);
