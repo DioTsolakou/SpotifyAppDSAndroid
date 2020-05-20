@@ -60,7 +60,7 @@
         app:layout_constraintVertical_bias="0.791" />
 
     <Button
-        android:id="@+id/previous_button"
+        android:id="@+id/backwards_button"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/previousbutton"
@@ -73,7 +73,7 @@
         app:layout_constraintVertical_bias="0.781" />
 
     <Button
-        android:id="@+id/next_button"
+        android:id="@+id/forward_button"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:background="@drawable/nextbutton"
@@ -95,7 +95,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/play_button" />
+        app:layout_constraintTop_toBottomOf="@+id/play_button"
+        app:layout_constraintVertical_bias="0.807" />
 
     <ImageView
         android:id="@+id/songImage"
@@ -127,5 +128,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/songImage" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="394dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/play_button"
+        android:thumbTint="@color/darkGrey"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
