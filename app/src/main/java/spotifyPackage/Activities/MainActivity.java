@@ -15,13 +15,14 @@ import spotifyPackage.Utilities.Utilities;
 public class MainActivity extends AppCompatActivity {
 
     private ListView artistList;
-    private String artistName;
     private AdapterView.OnItemClickListener listClick = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            artistName = (String) artistList.getItemAtPosition(position);
-            Toast.makeText(MainActivity.this, artistName + " was selected",
-                    Toast.LENGTH_SHORT).show();
+            String artistName = (String) artistList.getItemAtPosition(position);
+            //Toast.makeText(MainActivity.this, artistName + " was selected", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getBaseContext(), ArtistActivity.class);
+            intent.putExtra("Artist_Name", artistName);
+            startActivity(intent);
         }
     };
 
@@ -46,16 +47,11 @@ public class MainActivity extends AppCompatActivity {
         places.add("Buenos Aires");
         places.add("Córdoba");
 
-
         Toast.makeText(MainActivity.this, Utilities.findArtistsAll().get(1), Toast.LENGTH_SHORT).show();
 
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, places);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Utilities.findArtistsAll());
         artistList.setAdapter(myAdapter);
         artistList.setOnItemClickListener(listClick);
-
-        Intent intent = new Intent(getBaseContext(), ArtistActivity.class);
-        intent.putExtra("Artist_Name", artistName);
-        startActivity(intent);
     }
 
     @Override
