@@ -98,8 +98,21 @@ public class Utilities
             }
         }
 
-        try (OutputStream fos = new FileOutputStream("spotifyPackage\\Consumer\\" + songName + "_final.mp3")) {
+        String firstFile = "spotifyPackage\\Consumer\\" + songName + "_0.mp3";
+        String finalFile = "spotifyPackage\\Consumer\\" + songName + "_final.mp3";
+        try (OutputStream fos = new FileOutputStream(finalFile)) {
             fos.write(bytes);
+            try {
+                ID3v2 id3v2TagFirst = (new Mp3File(firstFile)).getId3v2Tag();
+                ID3v2 id3v2TagFinal = (new Mp3File(finalFile)).getId3v2Tag();
+                id3v2TagFinal.setArtist(id3v2TagFirst.getArtist());
+                id3v2TagFinal.setAlbum(id3v2TagFirst.getAlbum());
+                id3v2TagFinal.setYear(id3v2TagFirst.getYear());
+                id3v2TagFinal.setTitle(id3v2TagFirst.getTitle());
+            }
+            catch(Exception e){
+                //e.printStackTrace();
+            }
             //fos.close();
         }
         catch (Exception e) {

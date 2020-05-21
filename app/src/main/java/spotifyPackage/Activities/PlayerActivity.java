@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,7 +18,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
     private MediaPlayer mediaPlayer = new MediaPlayer();
     private int position;
+    private String artistName = getIntent().getStringExtra("Artist_Name");
     private String songName = getIntent().getStringExtra("Song_Name");
+    private TextView songTxt;
+    private TextView albumTxt;
     private ImageView songImage;
     private ImageView playButtonImage;
     private Button playButton;
@@ -31,6 +35,10 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+
+
+
+        songImage.setImageResource(R.drawable.noimage);
 
         playButton = findViewById(R.id.play_button);
         playButton.setOnClickListener(this);
@@ -86,7 +94,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if (v == playButton) {
-            if (buttonState){
+            if (buttonState) {
                 playButtonImage.setImageResource(R.drawable.pausebutton);
                 mediaPlayer.pause();
                 position = mediaPlayer.getCurrentPosition();

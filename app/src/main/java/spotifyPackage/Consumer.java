@@ -21,30 +21,22 @@ public class Consumer extends Node{
         this.ip = selectFirstBrokerIp(brokersDir);
         this.port = selectFirstBrokerPort(brokersDir);
         this.songName = songName;
-        runClient();
     }
 
-    private void runClient() {
+    public int run() {
         try {
-            do {
-                if (hasChanged) {
-                    connectToServer();
-                    getStreams();
-                    requestSong(songName);
-                    hasChanged = false;
-                }
-                processConnection();
-            } while (!connectionStatus.equals("exit"));
+            connectToServer();
+            getStreams();
+            requestSong(songName);
+            return process();
         }
-        catch (EOFException eofException) {
-            //eofException.printStackTrace();
-        }
-        catch (IOException ioException) {
-            ioException.printStackTrace();
+        catch (Exception e) {
+            e.printStackTrace();
         }
         finally {
             closeConnection();
         }
+        return -1;
     }
 
     private void connectToServer() throws IOException {
@@ -58,42 +50,34 @@ public class Consumer extends Node{
         }
     }
 
-    protected void processConnection() throws IOException {
-        try {
-            message = (Request) input.readObject();
+    private int process() throws IOException {
+        while (true) {
+            try {
+                message = (Request) input.readObject();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (message.getHeader().equals("newConnection")) {
+                sendData(new Request("newConnectionAck", ""));
+                //closeConnection();
+                String[] tempArray = ((String) message.getData()).split(",", 2);
+                this.ip = tempArray[0];
+                this.port = Integer.parseInt(tempArray[1]);
+                connectToServer();
+                getStreams();
+                requestSong(songName);
+            } else if (message.getHeader().contains("musicData")) {
+                sendData(new Request("musicDataAck", ""));
+                saveChunks(message);
+                if (message.getHeader().contains("0")) break;
+            } else if (message.getHeader().equals("artistUnavailable")) {
+                return -1;
+            }
+            else if (message.getHeader().equals("error")) {
+                return -1;
+            }
         }
-        catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        if (message.getHeader().equals("newConnection")) {
-            sendData(new Request("newConnectionAck", ""));
-            //closeConnection();
-            String[] tempArray = ((String) message.getData()).split(",", 2);
-            this.ip = tempArray[0];
-            this.port = Integer.parseInt(tempArray[1]);
-            hasChanged = true;
-        }
-        else if (message.getHeader().equals("error")) {
-            System.out.println("Unknown error");
-            connectionStatus = "exit";
-        }
-        else if (message.getHeader().equals("musicData 1")) {
-            sendData(new Request("musicDataAck", ""));
-            saveChunks(message);
-            System.out.println("Music fragment received and stored");
-        }
-        else if (message.getHeader().equals("artistUnavailable")) {
-            System.out.println("Sorry we can't find this song, try another one");
-            connectionStatus = "exit";
-        }
-        else if (message.getHeader().equals("musicData 0")) {
-            sendData(new Request("musicDataAck", ""));
-            saveChunks(message);
-            System.out.println("Music fragment received and stored");
-            connectionStatus = "exit";
-        }
-        connectionStatus = "continue";
+        return 0;
     }
 
     private void requestSong(String songName) {
@@ -102,7 +86,6 @@ public class Consumer extends Node{
 
     int counter = 0;
     private void saveChunks(Request chunk) {
-
         storeMetaData((MusicFile) chunk.getData());
         counter++;
         File f = new File("spotifyPackage\\Consumer\\" + currentSongTitle + "_" + counter + ".mp3");
@@ -112,10 +95,7 @@ public class Consumer extends Node{
             fos.close();
             System.out.println("Music fragment received and stored");
         }
-        catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
 
