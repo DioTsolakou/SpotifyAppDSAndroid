@@ -1,7 +1,5 @@
 package spotifyPackage.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import spotifyPackage.R;
 import spotifyPackage.Utilities.Utilities;
@@ -87,8 +87,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         if (v == playButton) {
             if (buttonState){
-                //needs pause button image
-                //playButtonImage.setImageResource(R.drawable.pausebutton);
+                playButtonImage.setImageResource(R.drawable.pausebutton);
                 mediaPlayer.pause();
                 position = mediaPlayer.getCurrentPosition();
             }
@@ -128,7 +127,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     {
         if(mediaPlayer.isPlaying())
         {
-            seekbar = (SeekBar)findViewById(R.id.seekBar);
+            seekbar = findViewById(R.id.seekBar);
             seekbar.setProgress(mediaPlayer.getCurrentPosition());
 
             Runnable r = new Runnable()
