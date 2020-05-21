@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SpotifyDS</string>
+    <string name="description">Song Image</string>
 </resources>

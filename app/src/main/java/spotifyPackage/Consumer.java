@@ -105,7 +105,7 @@ public class Consumer extends Node{
 
         storeMetaData((MusicFile) chunk.getData());
         counter++;
-        File f = new File("spotifyPackage\\Consumer\\" +currentSongTitle + counter + ".mp3");
+        File f = new File("spotifyPackage\\Consumer\\" + currentSongTitle + "_" + counter + ".mp3");
 
         try (OutputStream fos = new FileOutputStream(f)) {
             fos.write( ((MusicFile)chunk.getData()).getMusic() );

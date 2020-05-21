@@ -17,5 +17,7 @@ package="spotifyPackage">
     </activity>
 
     <activity android:name="spotifyPackage.Activities.PlayerActivity"></activity>
+
+    <activity android:name="spotifyPackage.Activities.ArtistActivity"></activity>
 </application>
 </manifest>

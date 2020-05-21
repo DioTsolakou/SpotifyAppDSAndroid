@@ -1,48 +1,27 @@
 package spotifyPackage.Utilities;
 
-import android.util.Log;
+import android.media.MediaPlayer;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+
 
 public class Utilities
 {
-    public static ArrayList<String> findAllArtists() {
+    public static ArrayList<File> chunks = new ArrayList<>();
+
+    public static ArrayList<String> findArtistsAll() {
         ArrayList<String> artists = new ArrayList<>();
-        Log.d("DEBUG", "STARTING TO READ FILE");
-        //Get the text file
-        File file = new File("Publisher/Α-Κ/A-K.txt");
-
-        //Read text from file
-        StringBuilder text = new StringBuilder();
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                //artists.add(text.toString());
-                Log.d("DEBUG", "ARTIST" + line + "ADDED");
-                text.append('\n');
-            }
-            br.close();
-        } catch (IOException e) {
-            Log.d("DEBUG", "EXEPTION");
-            //You'll need to add proper error handling here
-        }
-        //artists.addAll(findArtists("spotifyPackage\\Publisher\\A-K"));
-        //artists.addAll(findArtists("spotifyPackage\\Publisher\\L-Z"));
+        artists.addAll(findArtists("spotifyPackage\\Publisher\\A-K"));
+        artists.addAll(findArtists("spotifyPackage\\Publisher\\L-Z"));
         return artists;
     }
 
-    ArrayList<String> findArtists(String dir) {
+    private static ArrayList<String> findArtists(String dir) {
         ArrayList<String> list = new ArrayList<>();
         File[] listOfFiles = (new File(dir).listFiles());
         for (File f: listOfFiles) {
@@ -61,7 +40,7 @@ public class Utilities
         return list;
     }
 
-    ArrayList<String> findArtistSongs(String artistName) {
+    public static ArrayList<String> findArtistSongs(String artistName) {
         ArrayList<String> songs = new ArrayList<>();
         String dir, artist, title;
         if (Character.toUpperCase(artistName.charAt(0)) <= 'K')
@@ -86,5 +65,56 @@ public class Utilities
         }
 
         return songs;
+    }
+
+    private static void joinChunks(String songName)
+    {
+        String dir = "spotifyPackage\\Consumer\\";
+        File[] listOfFiles = new File(dir).listFiles();
+        chunks.clear();
+
+        int size = 0;
+        for (File f : listOfFiles) {
+            if (f.getName().equals(songName + "_final.mp3")) return;
+            if (f.getName().contains(songName))
+            {
+                chunks.add(f);
+                size += f.length();
+            }
+        }
+
+        Collections.sort(chunks, new ChunkComparator());
+        FileInputStream fis;
+        int offset = 0;
+        byte[] bytes = new byte[size];
+        for (File f: chunks){
+            try {
+                fis = new FileInputStream(f);
+                fis.read(bytes, offset, (int)f.length());
+                offset += f.length();
+                fis.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        try (OutputStream fos = new FileOutputStream("spotifyPackage\\Consumer\\" + songName + "_final.mp3")) {
+            fos.write(bytes);
+            //fos.close();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void playSong(MediaPlayer mp, String songName)
+    {
+        joinChunks(songName);
+        try {
+            mp.setDataSource("spotifyPackage\\Consumer\\" + songName + "_final.mp3");
+            mp.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
