@@ -8,18 +8,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import spotifyPackage.R;
 import spotifyPackage.Utilities.Utilities;
 
 public class PlayerActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private MediaPlayer mediaPlayer = new MediaPlayer();
+    private MediaPlayer mediaPlayer;
     private int position;
-    private String artistName = getIntent().getStringExtra("Artist_Name");
-    private String songName = getIntent().getStringExtra("Song_Name");
+    private String artistName;
+    private String songName;
     private TextView songTxt;
     private TextView albumTxt;
     private ImageView songImage;
@@ -30,15 +28,22 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private Button backToSearchButton;
     private boolean buttonState = false;
     private SeekBar seekbar;
+    private TextView timer;
+    private TextView duration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-
+        mediaPlayer = new MediaPlayer();
+        artistName = getIntent().getStringExtra("Artist_Name");
+        songName = getIntent().getStringExtra("Song_Name");
 
         songImage.setImageResource(R.drawable.noimage);
+        timer = findViewById(R.id.currentTime);
+        duration = findViewById(R.id.totalDuration);
+        duration.setText(Utilities.toTimer(mediaPlayer.getDuration()));
 
         playButton = findViewById(R.id.play_button);
         playButton.setOnClickListener(this);
@@ -50,27 +55,33 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         forwardButton.setOnClickListener(this);
 
         seekbar = findViewById(R.id.seekBar);
+        seekbar.setMax(mediaPlayer.getDuration()/1000);
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            // When the progress value has changed
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
+                if (mediaPlayer != null && fromUser)
+                {
+                    mediaPlayer.seekTo(progress * 1000);
+                }
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar)
             {
-                // This method will automatically
-                // called when the user touches the SeekBar
+                if (mediaPlayer != null)
+                {
+                    mediaPlayer.pause();
+                }
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar)
             {
-                // This method will automatically
-                // called when the user
-                // stops touching the SeekBar
+                if(mediaPlayer != null)
+                {
+                    mediaPlayer.seekTo(seekBar.getProgress());
+                }
             }
         });
 
@@ -136,7 +147,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         if(mediaPlayer.isPlaying())
         {
             seekbar = findViewById(R.id.seekBar);
-            seekbar.setProgress(mediaPlayer.getCurrentPosition());
+            seekbar.setProgress(mediaPlayer.getCurrentPosition()/1000);
 
             Runnable r = new Runnable()
             {
@@ -146,6 +157,21 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 }
             };
             new Handler().postDelayed(r,1000);
+        }
+    }
+
+    public void timerUpdater()
+    {
+        if (mediaPlayer.isPlaying()) {
+            timer = findViewById(R.id.currentTime);
+            timer.setText(Utilities.toTimer(mediaPlayer.getCurrentPosition()));
+
+            Runnable r = new Runnable() {
+                @Override
+                public void run() {
+                    timerUpdater();
+                }
+            };
         }
     }
 }

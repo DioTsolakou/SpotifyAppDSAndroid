@@ -1,10 +1,8 @@
 package spotifyPackage.Utilities;
 
 import android.media.MediaPlayer;
-
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -129,5 +127,26 @@ public class Utilities
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String toTimer(long milliseconds){
+        String finalTimerString = "";
+        String secondsString;
+        // Convert total duration into time
+        int hours = (int)( milliseconds / (1000*60*60));
+        int minutes = (int)(milliseconds % (1000*60*60)) / (1000*60);
+        int seconds = (int) ((milliseconds % (1000*60*60)) % (1000*60) / 1000);
+        // Add hours if there
+        if(hours > 0){
+            finalTimerString = hours + ":";
+        }
+        // Prepending 0 to seconds if it is one digit
+        if(seconds < 10){
+            secondsString = "0" + seconds;
+        }else{
+            secondsString = "" + seconds;}
+        finalTimerString = finalTimerString + minutes + ":" + secondsString;
+        // return timer string
+        return finalTimerString;
     }
 }

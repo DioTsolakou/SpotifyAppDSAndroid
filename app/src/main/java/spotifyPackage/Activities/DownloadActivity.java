@@ -7,12 +7,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import spotifyPackage.R;
 import spotifyPackage.Utilities.Utilities;
 
-public class ArtistActivity extends AppCompatActivity {
+public class DownloadActivity extends AppCompatActivity {
 
     private ListView songList;
     private String artistName = getIntent().getStringExtra("Artist_Name");
@@ -30,7 +29,7 @@ public class ArtistActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artist);
+        setContentView(R.layout.activity_download);
 
         songList = findViewById(R.id.songListView);
         //Toast.makeText(ArtistActivity.this, Utilities.findArtistSongs(artistName).get(1), Toast.LENGTH_SHORT).show();
