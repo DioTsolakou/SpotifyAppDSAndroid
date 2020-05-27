@@ -1,8 +1,17 @@
 package spotifyPackage;
 
-import com.mpatric.mp3agic.*;
-import java.io.*;
+import com.mpatric.mp3agic.ID3v2;
+import com.mpatric.mp3agic.Mp3File;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Socket;
+
+import spotifyPackage.Utilities.Utilities;
 
 public class Consumer extends Node{
 
@@ -16,11 +25,14 @@ public class Consumer extends Node{
     private String currentSongGenre;
     private String currentSongAlbum;
     private String currentSongTitle;
+    private String path;
 
-    public Consumer(String songName) {
+    public Consumer(String songName, String path) {
         this.ip = selectFirstBrokerIp(brokersDir);
         this.port = selectFirstBrokerPort(brokersDir);
         this.songName = songName;
+        this.path = path;
+
     }
 
     public int run() {
@@ -77,6 +89,7 @@ public class Consumer extends Node{
                 return -1;
             }
         }
+        Utilities.joinChunks(currentSongTitle);
         return 0;
     }
 
@@ -85,10 +98,11 @@ public class Consumer extends Node{
     }
 
     int counter = 0;
+
     private void saveChunks(Request chunk) {
         storeMetaData((MusicFile) chunk.getData());
         counter++;
-        File f = new File("spotifyPackage\\Consumer\\" + currentSongTitle + "_" + counter + ".mp3");
+        File f = new File(this.path + currentSongTitle + "_" + counter + ".mp3");
 
         try (OutputStream fos = new FileOutputStream(f)) {
             fos.write( ((MusicFile)chunk.getData()).getMusic() );

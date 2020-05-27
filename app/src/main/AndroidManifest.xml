@@ -19,5 +19,7 @@ package="spotifyPackage">
     <activity android:name="spotifyPackage.Activities.PlayerActivity"></activity>
 
     <activity android:name="spotifyPackage.Activities.DownloadActivity"></activity>
+
 </application>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>

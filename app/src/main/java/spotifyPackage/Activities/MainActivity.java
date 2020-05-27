@@ -6,9 +6,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import spotifyPackage.Consumer;
 import spotifyPackage.R;
+
+import static spotifyPackage.Utilities.Utilities.downloadPath;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                     String songName = songEditTxt.getText().toString();
                     String artistName = artistEditTxt.getText().toString();
                     if (songName.length() > 0 && artistName.length() > 0) {
-                        Consumer c = new Consumer(artistName + "," + songName);
+                        Consumer c = new Consumer(artistName + "," + songName, downloadPath.getPath());
                         if (c.run() == 0) {
                             Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
                             intent.putExtra("Artist_Name", artistName);

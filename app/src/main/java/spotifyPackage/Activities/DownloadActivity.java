@@ -1,15 +1,14 @@
 package spotifyPackage.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import spotifyPackage.R;
-import spotifyPackage.Utilities.Utilities;
 
 public class DownloadActivity extends AppCompatActivity {
 
@@ -33,8 +32,8 @@ public class DownloadActivity extends AppCompatActivity {
 
         songList = findViewById(R.id.songListView);
         //Toast.makeText(ArtistActivity.this, Utilities.findArtistSongs(artistName).get(1), Toast.LENGTH_SHORT).show();
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Utilities.findArtistSongs(artistName));
-        songList.setAdapter(myAdapter);
+        //ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Utilities.findArtistSongs(artistName));
+        //songList.setAdapter(myAdapter);
         songList.setOnItemClickListener(listClick);
     }
 

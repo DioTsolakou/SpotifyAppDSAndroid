@@ -10,6 +10,6 @@ public class ConsumerMain {
         System.out.println("Please input your desired song : ");
         song = in.nextLine();
 
-         Consumer phone = new Consumer(song);
+        Consumer phone = new Consumer(song, "");
     }
 }
