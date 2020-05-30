@@ -59,7 +59,6 @@ public class PublisherRunnable extends PublisherImplementation implements Runnab
 
     private byte[] fileToByteArray(File f) {
         byte[] bytesArray = new byte[(int) f.length()];
-
         try {
             FileInputStream fis = new FileInputStream(f);
             fis.read(bytesArray); //read file into bytes[]

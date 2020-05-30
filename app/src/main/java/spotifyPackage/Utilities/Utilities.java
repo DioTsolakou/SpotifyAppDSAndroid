@@ -67,16 +67,19 @@ public class Utilities {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         //deletes chunks after being used
+        boolean b;
         for (File f : listOfFiles) {
             if (!f.getName().endsWith("_final.mp3")) {
-                f.delete();
+                 b = f.delete();
+                 if (b) System.out.println("file deleted!");
             }
         }
     }
 
     public static void playSong(MediaPlayer mp, String songName) {
-        joinChunks(songName);
+        //joinChunks(songName);
         try {
             mp.setDataSource(downloadPath.getPath() + songName + "_final.mp3");
             mp.start();

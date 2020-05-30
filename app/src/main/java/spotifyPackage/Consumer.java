@@ -17,29 +17,30 @@ public class Consumer extends Node{
 
     private String brokersDir = "spotifyPackage\\Brokers\\brokers.txt";
     private Request message;
-    private String connectionStatus;
-    private boolean hasChanged = true;
-    String songName;
+    //private String connectionStatus;
+    //private boolean hasChanged = true;
+    private String artistSong;
 
-    private String currentSongArtist;
-    private String currentSongGenre;
-    private String currentSongAlbum;
-    private String currentSongTitle;
+    private String artist;
+    private String genre;
+    private String album;
+    private String title;
     private String path;
 
-    public Consumer(String songName, String path) {
+    private int counter = 0;
+
+    public Consumer(String artistSong, String path) {
         this.ip = selectFirstBrokerIp(brokersDir);
         this.port = selectFirstBrokerPort(brokersDir);
-        this.songName = songName;
+        this.artistSong = artistSong;
         this.path = path;
-
     }
 
     public int run() {
         try {
             connectToServer();
             getStreams();
-            requestSong(songName);
+            requestSong(artistSong);
             return process();
         }
         catch (Exception e) {
@@ -71,13 +72,13 @@ public class Consumer extends Node{
             }
             if (message.getHeader().equals("newConnection")) {
                 sendData(new Request("newConnectionAck", ""));
-                //closeConnection();
+                closeConnection();
                 String[] tempArray = ((String) message.getData()).split(",", 2);
                 this.ip = tempArray[0];
                 this.port = Integer.parseInt(tempArray[1]);
                 connectToServer();
                 getStreams();
-                requestSong(songName);
+                requestSong(artistSong);
             } else if (message.getHeader().contains("musicData")) {
                 sendData(new Request("musicDataAck", ""));
                 saveChunks(message);
@@ -89,7 +90,7 @@ public class Consumer extends Node{
                 return -1;
             }
         }
-        Utilities.joinChunks(currentSongTitle);
+        Utilities.joinChunks(title);
         return 0;
     }
 
@@ -97,13 +98,11 @@ public class Consumer extends Node{
         sendData(new Request("songPull", songName));
     }
 
-    int counter = 0;
-
     private void saveChunks(Request chunk) {
-        storeMetaData((MusicFile) chunk.getData());
+        if (counter == 0) storeMetaData((MusicFile) chunk.getData());
         counter++;
-        File f = new File(this.path + currentSongTitle + "_" + counter + ".mp3");
 
+        File f = new File(this.path + title + "_" + counter + ".mp3");
         try (OutputStream fos = new FileOutputStream(f)) {
             fos.write( ((MusicFile)chunk.getData()).getMusic() );
             fos.close();
@@ -112,24 +111,23 @@ public class Consumer extends Node{
         catch (Exception e) {
             e.printStackTrace();
         }
-
         setMetaData(f);
     }
 
-    private void storeMetaData(MusicFile song){
-        currentSongTitle = song.getTitle();
-        currentSongArtist = song.getArtistName();
-        currentSongAlbum = song.getAlbumInfo();
-        currentSongGenre = song.getGenre();
+    private void storeMetaData(MusicFile song) {
+        title = song.getTitle();
+        artist = song.getArtistName();
+        album = song.getAlbumInfo();
+        genre = song.getGenre();
     }
 
-    private void setMetaData(File f){
+    private void setMetaData(File f) {
         try {
             ID3v2 id3v2Tag = (new Mp3File(f)).getId3v2Tag();
-            id3v2Tag.setArtist(currentSongArtist);
-            id3v2Tag.setAlbum(currentSongAlbum);
-            id3v2Tag.setYear(currentSongGenre);
-            id3v2Tag.setTitle(currentSongTitle);
+            id3v2Tag.setArtist(artist);
+            id3v2Tag.setAlbum(album);
+            id3v2Tag.setYear(genre);
+            id3v2Tag.setTitle(title);
         }
         catch(Exception e){
             //e.printStackTrace();
