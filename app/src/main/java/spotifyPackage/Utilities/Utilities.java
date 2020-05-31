@@ -4,10 +4,8 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Environment;
 import android.widget.Toast;
-
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

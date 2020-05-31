@@ -14,11 +14,12 @@ import spotifyPackage.R;
 
 import static spotifyPackage.Utilities.Utilities.downloadPath;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText artistEditTxt;
     private EditText songEditTxt;
     private Button searchButton;
+    private Button libaryButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,33 +30,36 @@ public class MainActivity extends AppCompatActivity {
         artistEditTxt = findViewById(R.id.artistEditText);
 
         searchButton = findViewById(R.id.searchButton);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v == searchButton) {
-                    String songName = songEditTxt.getText().toString();
-                    String artistName = artistEditTxt.getText().toString();
-                    if (songName.length() > 0 && artistName.length() > 0) {
-                        Consumer c = new Consumer(artistName + "," + songName, downloadPath.getPath());
-                        if (c.run() == 0) {
-                            Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
-                            intent.putExtra("Artist_Name", artistName);
-                            intent.putExtra("Song_Name", songName);
-                            startActivity(intent);
-                        }
-                        else {
-                            Toast.makeText(MainActivity.this, "Error: Song not available!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            }
-        });
+        searchButton.setOnClickListener(this);
+
+        libaryButton = findViewById(R.id.libraryButton);
+        libaryButton.setOnClickListener(this);
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
     }
 
+    public void onClick(View v) {
+        if (v == searchButton) {
+            String songName = songEditTxt.getText().toString();
+            String artistName = artistEditTxt.getText().toString();
+            if (songName.length() > 0 && artistName.length() > 0) {
+                Consumer c = new Consumer(artistName + "," + songName, downloadPath.getPath());
+                if (c.run() == 0) {
+                    Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
+                    intent.putExtra("Artist_Name", artistName);
+                    intent.putExtra("Song_Name", songName);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(MainActivity.this, "Error: Song not available!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+        if (v == libaryButton) {
+            Intent intent = new Intent(this, DownloadActivity.class);
+            startActivity(intent);
+        }
+    }
 }

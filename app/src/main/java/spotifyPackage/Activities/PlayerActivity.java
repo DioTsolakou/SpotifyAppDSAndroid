@@ -1,5 +1,6 @@
 package spotifyPackage.Activities;
 
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,11 +38,15 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_player);
 
         mediaPlayer = new MediaPlayer();
+
         artistName = getIntent().getStringExtra("Artist_Name");
         songName = getIntent().getStringExtra("Song_Name");
 
+        songImage = findViewById(R.id.songImage);
         songImage.setImageResource(R.drawable.noimage);
+
         timer = findViewById(R.id.currentTime);
+
         duration = findViewById(R.id.totalDuration);
         duration.setText(Utilities.toTimer(mediaPlayer.getDuration()));
 
@@ -53,6 +58,16 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         forwardButton = findViewById(R.id.forward_button);
         forwardButton.setOnClickListener(this);
+
+        backToSearchButton = findViewById(R.id.back_to_search_button);
+        backToSearchButton.setOnClickListener(this);
+
+        songTxt = findViewById(R.id.SongName);
+        String songTxtToBeShown = artistName + " - " + songName;
+        songTxt.setText(songTxtToBeShown);
+
+        albumTxt = findViewById(R.id.AlbumName);
+        albumTxt.setText(""); // Album name needs to be pulled from ID3v2 tags
 
         seekbar = findViewById(R.id.seekBar);
         seekbar.setMax(mediaPlayer.getDuration()/1000);
@@ -87,6 +102,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         Utilities.playSong(mediaPlayer, songName);
         buttonState = true;
+        playButtonImage.setImageResource(R.drawable.pausebutton);
     }
 
     @Override
@@ -105,7 +121,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if (v == playButton) {
-            if (buttonState) {
+            if (!buttonState) {
                 playButtonImage.setImageResource(R.drawable.pausebutton);
                 mediaPlayer.pause();
                 position = mediaPlayer.getCurrentPosition();
@@ -138,7 +154,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         if (v == backToSearchButton)
         {
-            onPause();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
     }
 
