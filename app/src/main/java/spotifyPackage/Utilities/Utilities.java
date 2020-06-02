@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Utilities {
+    // we should probably differentiate the variables that will hold the folders instead of having one
     public static File downloadPath;
     public static ArrayList<File> chunks = new ArrayList<>();
 
@@ -108,7 +109,10 @@ public class Utilities {
         return finalTimerString;
     }
 
-    private void createDownloadDir(Context context) {
+
+    /* Make the two methods below into one */
+
+    public static void createDownloadDir(Context context) {
         downloadPath = new File(Environment.getExternalStorageDirectory() + File.separator + "downloads");
 
         boolean success = true;
@@ -116,7 +120,20 @@ public class Utilities {
             success = downloadPath.mkdirs();
         }
         if (!success) {
-            Toast.makeText(context, "Unable to create folder!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Unable to create downloads folder!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void createStreamingDir(Context context) {
+        downloadPath = new File(Environment.getExternalStorageState() + File.separator + "streaming");
+
+        boolean success = true;
+        if (!downloadPath.exists()) {
+            success = downloadPath.mkdirs();
+        }
+
+        if (!success) {
+            Toast.makeText(context, "Unable to create streaming folder!", Toast.LENGTH_SHORT).show();
         }
     }
         /*

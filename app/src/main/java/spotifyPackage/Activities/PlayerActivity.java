@@ -27,6 +27,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private Button backwardsButton;
     private Button forwardButton;
     private Button backToSearchButton;
+    private Button downloadButton;
     private boolean buttonState = false;
     private SeekBar seekbar;
     private TextView timer;
@@ -61,6 +62,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         backToSearchButton = findViewById(R.id.back_to_search_button);
         backToSearchButton.setOnClickListener(this);
+
+        downloadButton = findViewById(R.id.downloadbutton);
+        downloadButton.setOnClickListener(this);
 
         songTxt = findViewById(R.id.SongName);
         String songTxtToBeShown = artistName + " - " + songName;
@@ -99,6 +103,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
         });
+
+        Utilities.createStreamingDir(PlayerActivity.this);
 
         Utilities.playSong(mediaPlayer, songName);
         buttonState = true;
@@ -156,6 +162,11 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+        }
+
+        if (v == downloadButton) {
+            Utilities.createDownloadDir(PlayerActivity.this);
+            // another method is needed to move the song from streaming folder to downloads
         }
     }
 
