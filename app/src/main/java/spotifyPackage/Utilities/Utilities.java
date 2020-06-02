@@ -15,12 +15,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class Utilities {
-    // we should probably differentiate the variables that will hold the folders instead of having one
+    public static File streamingPath;
     public static File downloadPath;
+    public static File path; //might not be needed, or might need some changes where it is used. Renamed it to use the other 2 paths
     public static ArrayList<File> chunks = new ArrayList<>();
 
     public static void joinChunks(String songName) {
-        String dir = downloadPath.getPath();
+        String dir = path.getPath();
         File[] listOfFiles = new File(dir).listFiles();
         chunks.clear();
 
@@ -48,8 +49,8 @@ public class Utilities {
             }
         }
 
-        String firstFile = downloadPath.getPath() + songName + "_0.mp3";
-        String finalFile = downloadPath.getPath() + songName + "_final.mp3";
+        String firstFile = path.getPath() + songName + "_0.mp3";
+        String finalFile = path.getPath() + songName + "_final.mp3";
         try (OutputStream fos = new FileOutputStream(finalFile)) {
             fos.write(bytes);
             try {
@@ -80,7 +81,7 @@ public class Utilities {
     public static void playSong(MediaPlayer mp, String songName) {
         //joinChunks(songName);
         try {
-            mp.setDataSource(downloadPath.getPath() + songName + "_final.mp3");
+            mp.setDataSource(path.getPath() + songName + "_final.mp3");
             mp.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -125,15 +126,30 @@ public class Utilities {
     }
 
     public static void createStreamingDir(Context context) {
-        downloadPath = new File(Environment.getExternalStorageState() + File.separator + "streaming");
+        streamingPath = new File(Environment.getExternalStorageState() + File.separator + "streaming");
 
         boolean success = true;
-        if (!downloadPath.exists()) {
-            success = downloadPath.mkdirs();
+        if (!streamingPath.exists()) {
+            success = streamingPath.mkdirs();
         }
 
         if (!success) {
             Toast.makeText(context, "Unable to create streaming folder!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static void moveFromStreamingToDownload(String songName) {
+        File[] listOfFiles = streamingPath.listFiles();
+
+        for (File f : listOfFiles) {
+            if (f.getName().equals(songName + "_final.mp3")) {
+                if (f.renameTo(new File(downloadPath + "\\" + songName + "_final.mp3"))) {
+                    f.delete(); // Unsure whether to delete the file after copying it to downloads folder.
+                                // The user could still want to listen to the song for the moment and
+                                // deleting it when he presses the button will break the player.
+                }
+                else return;
+            }
         }
     }
         /*

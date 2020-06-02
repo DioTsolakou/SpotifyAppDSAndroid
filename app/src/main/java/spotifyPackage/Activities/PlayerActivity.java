@@ -166,7 +166,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         if (v == downloadButton) {
             Utilities.createDownloadDir(PlayerActivity.this);
-            // another method is needed to move the song from streaming folder to downloads
+            Utilities.moveFromStreamingToDownload(songName);
         }
     }
 

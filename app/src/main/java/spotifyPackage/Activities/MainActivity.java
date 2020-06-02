@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import spotifyPackage.Consumer;
 import spotifyPackage.R;
 
-import static spotifyPackage.Utilities.Utilities.downloadPath;
+import static spotifyPackage.Utilities.Utilities.path;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String songName = songEditTxt.getText().toString();
             String artistName = artistEditTxt.getText().toString();
             if (songName.length() > 0 && artistName.length() > 0) {
-                Consumer c = new Consumer(artistName + "," + songName, downloadPath.getPath());
+                Consumer c = new Consumer(artistName + "," + songName, path.getPath());
                 if (c.run() == 0) {
                     Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
                     intent.putExtra("Artist_Name", artistName);
