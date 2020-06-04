@@ -4,24 +4,24 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.File;
+
 import spotifyPackage.R;
+import spotifyPackage.Utilities.Utilities;
+
+import static spotifyPackage.Utilities.Utilities.downloadPath;
+import static spotifyPackage.Utilities.Utilities.findDownloads;
 
 public class DownloadActivity extends AppCompatActivity {
 
     private ListView songList;
-    private String artistName = getIntent().getStringExtra("Artist_Name");
-    private AdapterView.OnItemClickListener listClick = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String songName = (String) songList.getItemAtPosition(position);
-            //Toast.makeText(ArtistActivity.this, songName + " was selected", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
-            intent.putExtra("Song_Name", songName);
-            startActivity(intent);
-        }
-    };
+    private String[] songs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +29,28 @@ public class DownloadActivity extends AppCompatActivity {
         setContentView(R.layout.activity_download);
 
         songList = findViewById(R.id.songListView);
-        //Toast.makeText(ArtistActivity.this, Utilities.findArtistSongs(artistName).get(1), Toast.LENGTH_SHORT).show();
-        //ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Utilities.findArtistSongs(artistName));
-        //songList.setAdapter(myAdapter);
-        songList.setOnItemClickListener(listClick);
+        songs = findDownloads();
+
+        final ArrayAdapter<String> myAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
+        songList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String song = myAdapter.getItem(position);
+                if (song == null) return;
+                String artist = song.substring(0, song.indexOf("-"));
+                String title = song.substring(song.indexOf("-")+1);
+                //Toast.makeText(DownloadActivity.this, songName + " was selected", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(DownloadActivity.this, PlayerActivity.class);
+                intent.putExtra("Artist_Name", artist);
+                intent.putExtra("Song_Name", title);
+                intent.putExtra("Path", downloadPath.getPath());
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
     }
 }

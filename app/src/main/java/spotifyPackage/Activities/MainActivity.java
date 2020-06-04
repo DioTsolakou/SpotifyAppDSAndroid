@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import spotifyPackage.Consumer;
 import spotifyPackage.R;
+import spotifyPackage.Utilities.Utilities;
 
 import static spotifyPackage.Utilities.Utilities.path;
+import static spotifyPackage.Utilities.Utilities.streamingPath;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -43,14 +45,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onClick(View v) {
         if (v == searchButton) {
-            String songName = songEditTxt.getText().toString();
-            String artistName = artistEditTxt.getText().toString();
-            if (songName.length() > 0 && artistName.length() > 0) {
-                Consumer c = new Consumer(artistName + "," + songName, path.getPath());
+            String artist = artistEditTxt.getText().toString();
+            String title = songEditTxt.getText().toString();
+            if (title.length() > 0 && artist.length() > 0) {
+                Utilities.createStreamingDir(MainActivity.this);
+                Consumer c = new Consumer(artist + "," + title, streamingPath.getPath());
                 if (c.run() == 0) {
                     Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
-                    intent.putExtra("Artist_Name", artistName);
-                    intent.putExtra("Song_Name", songName);
+                    intent.putExtra("Artist_Name", artist);
+                    intent.putExtra("Song_Name", title);
+                    intent.putExtra("Path", streamingPath.getPath());
                     startActivity(intent);
                 } else {
                     Toast.makeText(MainActivity.this, "Error: Song not available!", Toast.LENGTH_SHORT).show();

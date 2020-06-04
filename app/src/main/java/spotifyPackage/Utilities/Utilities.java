@@ -20,15 +20,15 @@ public class Utilities {
     public static File path; //might not be needed, or might need some changes where it is used. Renamed it to use the other 2 paths
     public static ArrayList<File> chunks = new ArrayList<>();
 
-    public static void joinChunks(String songName) {
-        String dir = path.getPath();
+    public static void joinChunks(String song) {
+        String dir = streamingPath.getPath();
         File[] listOfFiles = new File(dir).listFiles();
         chunks.clear();
 
         int size = 0;
         for (File f : listOfFiles) {
-            if (f.getName().equals(songName + "_final.mp3")) return;
-            if (f.getName().contains(songName)) {
+            if (f.getName().equals(song + "_final.mp3")) return;
+            if (f.getName().contains(song)) {
                 chunks.add(f);
                 size += f.length();
             }
@@ -49,8 +49,8 @@ public class Utilities {
             }
         }
 
-        String firstFile = path.getPath() + songName + "_0.mp3";
-        String finalFile = path.getPath() + songName + "_final.mp3";
+        String firstFile = streamingPath.getPath() + song + "_0.mp3";
+        String finalFile = streamingPath.getPath() + song + "_final.mp3";
         try (OutputStream fos = new FileOutputStream(finalFile)) {
             fos.write(bytes);
             try {
@@ -78,9 +78,10 @@ public class Utilities {
         }
     }
 
-    public static void playSong(MediaPlayer mp, String songName) {
+    public static void playSong(MediaPlayer mp, String songName, boolean downloaded) {
         //joinChunks(songName);
         try {
+            File path = downloaded ? downloadPath: streamingPath;
             mp.setDataSource(path.getPath() + songName + "_final.mp3");
             mp.start();
         } catch (IOException e) {
@@ -138,19 +139,34 @@ public class Utilities {
         }
     }
 
-    public static void moveFromStreamingToDownload(String songName) {
+    public static String moveFromStreamingToDownload(String songName) {
         File[] listOfFiles = streamingPath.listFiles();
 
         for (File f : listOfFiles) {
             if (f.getName().equals(songName + "_final.mp3")) {
                 if (f.renameTo(new File(downloadPath + "\\" + songName + "_final.mp3"))) {
-                    f.delete(); // Unsure whether to delete the file after copying it to downloads folder.
-                                // The user could still want to listen to the song for the moment and
-                                // deleting it when he presses the button will break the player.
+                    f.delete();
+                    return "Download successful!";
                 }
-                else return;
+                else return "Download failed!";
             }
         }
+        return "Download failed!";
+    }
+
+    public static String[] findDownloads() {
+        ArrayList<String> songlist = new ArrayList<>();
+
+        File[] listOfFiles = downloadPath.listFiles();
+        for (File f : listOfFiles) {
+            String filename = f.getName().substring(0, f.getName().indexOf("_"));
+            songlist.add(filename.replace("@", "-"));
+        }
+
+        String[] songarray = new String[songlist.size()];
+        songlist.toArray(songarray);
+
+        return songarray;
     }
         /*
     public static ArrayList<String> findArtistsAll() {

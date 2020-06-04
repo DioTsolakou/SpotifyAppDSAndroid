@@ -1,5 +1,7 @@
 package spotifyPackage;
 
+import android.util.Log;
+
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 
@@ -30,8 +32,11 @@ public class Consumer extends Node{
     private int counter = 0;
 
     public Consumer(String artistSong, String path) {
-        this.ip = selectFirstBrokerIp(brokersDir);
-        this.port = selectFirstBrokerPort(brokersDir);
+        String[] brokerDetails = selectFirstBrokerDetails(brokersDir);
+        //this.ip = brokerDetails[0];
+        //this.port = Integer.parseInt(brokerDetails[1]);this.ip = brokerDetails[0];
+        this.ip = "127.0.0.1";
+        this.port = 9999;
         this.artistSong = artistSong;
         this.path = path;
     }
@@ -90,7 +95,7 @@ public class Consumer extends Node{
                 return -1;
             }
         }
-        Utilities.joinChunks(title);
+        Utilities.joinChunks(artist + "@" + title);
         return 0;
     }
 
@@ -102,7 +107,7 @@ public class Consumer extends Node{
         if (counter == 0) storeMetaData((MusicFile) chunk.getData());
         counter++;
 
-        File f = new File(this.path + title + "_" + counter + ".mp3");
+        File f = new File(this.path + artist + "@" + title + "_" + counter + ".mp3");
         try (OutputStream fos = new FileOutputStream(f)) {
             fos.write( ((MusicFile)chunk.getData()).getMusic() );
             fos.close();
@@ -134,6 +139,23 @@ public class Consumer extends Node{
         }
     }
 
+    private String[] selectFirstBrokerDetails(String file) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String line;
+            line = br.readLine();
+            Log.d("debugline", line);
+            String[] details = line.split(" ", 2);
+            Log.d("debugip", details[0]);
+            Log.d("debugport", details[1]);
+            return details;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new String[2];
+    }
+    /*
     private String selectFirstBrokerIp(String file) {
         String[] brokerArray = new String[2];
         try {
@@ -161,4 +183,5 @@ public class Consumer extends Node{
         }
         return Integer.parseInt(brokerArray[1]);
     }
+    */
 }

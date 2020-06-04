@@ -33,7 +33,7 @@ public class PublisherRunnable extends PublisherImplementation implements Runnab
     protected void processConnection() throws IOException {
         try{
             Request r = (Request) input.readObject();
-            if(r.getHeader().equals("songPull")){
+            if (r.getHeader().equals("songPull")) {
                 String inputString = (r.getData().toString());
                 File f = findSong(inputString.substring(inputString.indexOf(',')+1));
                 System.out.println(dir + "\\" + f.getName());
@@ -49,10 +49,19 @@ public class PublisherRunnable extends PublisherImplementation implements Runnab
         }
     }
 
-    private File findSong(String song) {
+    private File findSong(String title) {
         File[] listOfFiles = (new File(dir)).listFiles();
         for (File f: listOfFiles) {
-            if (f.getName().contains(song)) return f;
+            try {
+                Mp3File mp3file = new Mp3File(dir + "\\" + f.getName());
+                if (mp3file.hasId3v2Tag()) {
+                    ID3v2 id3v2Tag = mp3file.getId3v2Tag();
+                    if (id3v2Tag.getTitle().equals(title))
+                        return f;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

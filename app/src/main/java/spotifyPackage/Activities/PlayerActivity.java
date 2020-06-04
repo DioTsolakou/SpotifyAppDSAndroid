@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import spotifyPackage.R;
 import spotifyPackage.Utilities.Utilities;
@@ -19,6 +21,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private int position;
     private String artistName;
     private String songName;
+    private String path;
     private TextView songTxt;
     private TextView albumTxt;
     private ImageView songImage;
@@ -42,6 +45,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         artistName = getIntent().getStringExtra("Artist_Name");
         songName = getIntent().getStringExtra("Song_Name");
+        path = getIntent().getStringExtra("Path");
 
         songImage = findViewById(R.id.songImage);
         songImage.setImageResource(R.drawable.noimage);
@@ -106,7 +110,8 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         Utilities.createStreamingDir(PlayerActivity.this);
 
-        Utilities.playSong(mediaPlayer, songName);
+        //check if given path is downloadPath
+        Utilities.playSong(mediaPlayer, songName, path.equals(Utilities.downloadPath.getPath()));
         buttonState = true;
         playButtonImage.setImageResource(R.drawable.pausebutton);
     }
@@ -122,6 +127,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                 mediaPlayer.release();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
     }
 
     @Override
@@ -166,7 +177,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         if (v == downloadButton) {
             Utilities.createDownloadDir(PlayerActivity.this);
-            Utilities.moveFromStreamingToDownload(songName);
+            Toast.makeText(PlayerActivity.this, Utilities.moveFromStreamingToDownload(songName), Toast.LENGTH_SHORT).show();
         }
     }
 

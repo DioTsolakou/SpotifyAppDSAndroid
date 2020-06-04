@@ -16,13 +16,14 @@ public class Node {
     protected String ip;
     protected int port;
 
-    public Node(){
-        try {
-            this.ip = InetAddress.getLocalHost().getHostAddress();
-        }
-        catch (UnknownHostException e) {
+    public Node() {
+        //try {
+            //this.ip = InetAddress.getLocalHost().getHostAddress();
+            this.ip = "127.0.0.0";
+        //}
+        /*/catch (UnknownHostException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     public Node(int port){
