@@ -30,13 +30,13 @@ public class DownloadActivity extends AppCompatActivity {
 
         songList = findViewById(R.id.songListView);
         songs = findDownloads();
-
         final ArrayAdapter<String> myAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, songs);
         songList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String song = myAdapter.getItem(position);
                 if (song == null) return;
+                if (song.equals("No songs in your library")) return;
                 String artist = song.substring(0, song.indexOf("-"));
                 String title = song.substring(song.indexOf("-")+1);
                 //Toast.makeText(DownloadActivity.this, songName + " was selected", Toast.LENGTH_SHORT).show();

@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         libaryButton = findViewById(R.id.libraryButton);
         libaryButton.setOnClickListener(this);
+
+        Utilities.createStreamingDir(MainActivity.this);
+        Utilities.createDownloadDir(MainActivity.this);
     }
 
     @Override

@@ -108,8 +108,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-        Utilities.createStreamingDir(PlayerActivity.this);
-
         //check if given path is downloadPath
         Utilities.playSong(mediaPlayer, songName, path.equals(Utilities.downloadPath.getPath()));
         buttonState = true;
@@ -176,7 +174,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         if (v == downloadButton) {
-            Utilities.createDownloadDir(PlayerActivity.this);
             Toast.makeText(PlayerActivity.this, Utilities.moveFromStreamingToDownload(songName), Toast.LENGTH_SHORT).show();
         }
     }

@@ -115,7 +115,9 @@ public class Utilities {
     /* Make the two methods below into one */
 
     public static void createDownloadDir(Context context) {
-        downloadPath = new File(Environment.getExternalStorageDirectory() + File.separator + "downloads");
+        downloadPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "downloads" + File.separator );
+        //String folderName = "downloads";
+        //downloadPath = new File(Environment.getExternalStorageDirectory(), folderName);
 
         boolean success = true;
         if (!downloadPath.exists()) {
@@ -127,7 +129,9 @@ public class Utilities {
     }
 
     public static void createStreamingDir(Context context) {
-        streamingPath = new File(Environment.getExternalStorageState() + File.separator + "streaming");
+        streamingPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "streaming" + File.separator );
+        //String folderName = "streaming";
+        //streamingPath = new File(Environment.getExternalStorageDirectory(), folderName);
 
         boolean success = true;
         if (!streamingPath.exists()) {
@@ -158,6 +162,11 @@ public class Utilities {
         ArrayList<String> songlist = new ArrayList<>();
 
         File[] listOfFiles = downloadPath.listFiles();
+        if (listOfFiles.length == 0) {
+            String[] temp = new String[1];
+            temp[0] = "No songs in your library";
+            return temp;
+        }
         for (File f : listOfFiles) {
             String filename = f.getName().substring(0, f.getName().indexOf("_"));
             songlist.add(filename.replace("@", "-"));
