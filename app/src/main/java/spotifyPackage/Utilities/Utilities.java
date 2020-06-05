@@ -1,9 +1,16 @@
 package spotifyPackage.Utilities;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Environment;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
 import java.io.File;
@@ -111,35 +118,26 @@ public class Utilities {
         return finalTimerString;
     }
 
-
-    /* Make the two methods below into one */
-
-    public static void createDownloadDir(Context context) {
-        downloadPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "downloads" + File.separator );
-        //String folderName = "downloads";
-        //downloadPath = new File(Environment.getExternalStorageDirectory(), folderName);
-
+    public static void createStorageDir(Context context, String name) {
         boolean success = true;
-        if (!downloadPath.exists()) {
-            success = downloadPath.mkdirs();
-        }
-        if (!success) {
-            Toast.makeText(context, "Unable to create downloads folder!", Toast.LENGTH_SHORT).show();
-        }
-    }
 
-    public static void createStreamingDir(Context context) {
-        streamingPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "streaming" + File.separator );
-        //String folderName = "streaming";
-        //streamingPath = new File(Environment.getExternalStorageDirectory(), folderName);
+        if (name.equals("downloads")) {
+            downloadPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + name);
 
-        boolean success = true;
-        if (!streamingPath.exists()) {
-            success = streamingPath.mkdirs();
+            if (!downloadPath.exists()) {
+                success = downloadPath.mkdirs();
+            }
+        }
+        if (name.equals("streaming")) {
+            streamingPath = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + name);
+
+            if (!streamingPath.exists()) {
+                success = streamingPath.mkdirs();
+            }
         }
 
         if (!success) {
-            Toast.makeText(context, "Unable to create streaming folder!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Unable to create " +name+ " folder!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -177,6 +175,7 @@ public class Utilities {
 
         return songarray;
     }
+
         /*
     public static ArrayList<String> findArtistsAll() {
         ArrayList<String> artists = new ArrayList<>();

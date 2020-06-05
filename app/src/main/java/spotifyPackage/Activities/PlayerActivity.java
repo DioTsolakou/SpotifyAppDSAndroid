@@ -169,7 +169,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         if (v == backToSearchButton)
         {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(PlayerActivity.this, MainActivity.class);
             startActivity(intent);
         }
 

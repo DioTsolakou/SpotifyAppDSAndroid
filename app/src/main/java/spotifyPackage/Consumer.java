@@ -35,7 +35,7 @@ public class Consumer extends Node{
         String[] brokerDetails = selectFirstBrokerDetails(brokersDir);
         //this.ip = brokerDetails[0];
         //this.port = Integer.parseInt(brokerDetails[1]);this.ip = brokerDetails[0];
-        this.ip = "127.0.0.1";
+        this.ip = "10.0.2.2";
         this.port = 9999;
         this.artistSong = artistSong;
         this.path = path;
@@ -96,6 +96,7 @@ public class Consumer extends Node{
             }
         }
         Utilities.joinChunks(artist + "@" + title);
+        closeConnection();
         return 0;
     }
 
