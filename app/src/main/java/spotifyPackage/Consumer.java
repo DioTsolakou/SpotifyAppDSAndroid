@@ -1,9 +1,6 @@
 package spotifyPackage;
 
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
@@ -16,18 +13,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
-import spotifyPackage.Activities.MainActivity;
-import spotifyPackage.Activities.PlayerActivity;
 import spotifyPackage.Utilities.Utilities;
-
-import static spotifyPackage.Utilities.Utilities.streamingPath;
 
 public class Consumer extends Node {
 
     private String brokersDir = "spotifyPackage\\Brokers\\brokers.txt";
     private Request message;
-    //private String connectionStatus;
-    //private boolean hasChanged = true;
     private String artistSong;
 
     private String artist;
@@ -35,6 +26,8 @@ public class Consumer extends Node {
     private String album;
     private String title;
     private String path;
+
+    private int exit;
 
     private int counter = 0;
 
@@ -46,25 +39,29 @@ public class Consumer extends Node {
         this.port = 9999;
         this.artistSong = artistSong;
         this.path = path;
+        exit = 999;
     }
 
-    public int run() {
+    public int getExit() {return exit;}
+
+    public void run() {
         try {
             connectToServer();
             getStreams();
             requestSong(artistSong);
-            return process();
+            exit = process();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             closeConnection();
         }
-        return -1;
+        exit = -1;
     }
 
     private void connectToServer() throws IOException {
         System.out.println("Attempting connection to " + ip + "::" + port);
         connection = new Socket(ip, port);
+        System.out.println("after socket");
         if (connection.isConnected()) {
             System.out.println("Connected to " + ip + "::" + port);
         } else {
@@ -107,7 +104,7 @@ public class Consumer extends Node {
         sendData(new Request("songPull", songName));
     }
 
-    private void saveChunks(Request chunk) {
+    public void saveChunks(Request chunk) {
         if (counter == 0) storeMetaData((MusicFile) chunk.getData());
         counter++;
 
@@ -137,7 +134,7 @@ public class Consumer extends Node {
             id3v2Tag.setYear(genre);
             id3v2Tag.setTitle(title);
         } catch (Exception e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -158,32 +155,3 @@ public class Consumer extends Node {
     }
 
 }
-    /*
-    private String selectFirstBrokerIp(String file) {
-        String[] brokerArray = new String[2];
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            line = br.readLine();
-            brokerArray = line.split(" ", 2);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return brokerArray[0];
-    }
-
-    private int selectFirstBrokerPort(String file) {
-        String[] brokerArray = new String[2];
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String line;
-            line = br.readLine();
-            brokerArray = line.split(" ", 2);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return Integer.parseInt(brokerArray[1]);
-    }
-    */

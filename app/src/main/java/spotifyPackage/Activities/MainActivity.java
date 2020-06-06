@@ -65,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (title.length() > 0 && artist.length() > 0) {
                 ConsumerTask ct = new ConsumerTask(MainActivity.this.getBaseContext());
                 ct.execute(artist, title, streamingPath.getPath());
+                /*Consumer c = new Consumer(artist + "," + title, streamingPath.getPath());
+                c.run();
+                while(c.getExit() == 999);
+                System.out.println(c.getExit());*/
                 /*AsyncTask.execute(new Runnable() {
                     @Override
                     public void run() {
