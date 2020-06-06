@@ -43,9 +43,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mediaPlayer = new MediaPlayer();
 
-        artistName = getIntent().getStringExtra("Artist_Name");
+        /*artistName = getIntent().getStringExtra("Artist_Name");
         songName = getIntent().getStringExtra("Song_Name");
-        path = getIntent().getStringExtra("Path");
+        path = getIntent().getStringExtra("Path");*/
 
         songImage = findViewById(R.id.songImage);
         songImage.setImageResource(R.drawable.noimage);
@@ -79,7 +79,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         seekbar = findViewById(R.id.seekBar);
         seekbar.setMax(mediaPlayer.getDuration()/1000);
-        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        /*seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
@@ -106,12 +106,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                     mediaPlayer.seekTo(seekBar.getProgress());
                 }
             }
-        });
+        });*/
 
         //check if given path is downloadPath
-        Utilities.playSong(mediaPlayer, songName, path.equals(Utilities.downloadPath.getPath()));
+        /*Utilities.playSong(mediaPlayer, songName, path.equals(Utilities.downloadPath.getPath()));
         buttonState = true;
-        playButtonImage.setImageResource(R.drawable.pausebutton);
+        playButtonImage.setImageResource(R.drawable.pausebutton);*/
     }
 
     @Override

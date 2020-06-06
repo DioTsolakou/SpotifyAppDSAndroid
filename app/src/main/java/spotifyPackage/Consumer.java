@@ -1,6 +1,9 @@
 package spotifyPackage;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.mpatric.mp3agic.ID3v2;
 import com.mpatric.mp3agic.Mp3File;
@@ -13,9 +16,13 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import spotifyPackage.Activities.MainActivity;
+import spotifyPackage.Activities.PlayerActivity;
 import spotifyPackage.Utilities.Utilities;
 
-public class Consumer extends Node{
+import static spotifyPackage.Utilities.Utilities.streamingPath;
+
+public class Consumer extends Node {
 
     private String brokersDir = "spotifyPackage\\Brokers\\brokers.txt";
     private Request message;
@@ -32,7 +39,7 @@ public class Consumer extends Node{
     private int counter = 0;
 
     public Consumer(String artistSong, String path) {
-        String[] brokerDetails = selectFirstBrokerDetails(brokersDir);
+        //String[] brokerDetails = selectFirstBrokerDetails(brokersDir);
         //this.ip = brokerDetails[0];
         //this.port = Integer.parseInt(brokerDetails[1]);this.ip = brokerDetails[0];
         this.ip = "10.0.2.2";
@@ -47,11 +54,9 @@ public class Consumer extends Node{
             getStreams();
             requestSong(artistSong);
             return process();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             closeConnection();
         }
         return -1;
@@ -62,8 +67,7 @@ public class Consumer extends Node{
         connection = new Socket(ip, port);
         if (connection.isConnected()) {
             System.out.println("Connected to " + ip + "::" + port);
-        }
-        else {
+        } else {
             System.out.println("Can't connect to " + ip + "::" + port);
         }
     }
@@ -90,8 +94,7 @@ public class Consumer extends Node{
                 if (message.getHeader().contains("0")) break;
             } else if (message.getHeader().equals("artistUnavailable")) {
                 return -1;
-            }
-            else if (message.getHeader().equals("error")) {
+            } else if (message.getHeader().equals("error")) {
                 return -1;
             }
         }
@@ -110,11 +113,10 @@ public class Consumer extends Node{
 
         File f = new File(this.path + artist + "@" + title + "_" + counter + ".mp3");
         try (OutputStream fos = new FileOutputStream(f)) {
-            fos.write( ((MusicFile)chunk.getData()).getMusic() );
+            fos.write(((MusicFile) chunk.getData()).getMusic());
             fos.close();
             System.out.println("Music fragment received and stored");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         setMetaData(f);
@@ -134,8 +136,7 @@ public class Consumer extends Node{
             id3v2Tag.setAlbum(album);
             id3v2Tag.setYear(genre);
             id3v2Tag.setTitle(title);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             //e.printStackTrace();
         }
     }
@@ -150,12 +151,13 @@ public class Consumer extends Node{
             Log.d("debugip", details[0]);
             Log.d("debugport", details[1]);
             return details;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return new String[2];
     }
+
+}
     /*
     private String selectFirstBrokerIp(String file) {
         String[] brokerArray = new String[2];
@@ -185,4 +187,3 @@ public class Consumer extends Node{
         return Integer.parseInt(brokerArray[1]);
     }
     */
-}

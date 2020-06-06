@@ -3,6 +3,7 @@ package spotifyPackage.Activities;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -26,6 +27,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private EditText songEditTxt;
     private Button searchButton;
     private Button libraryButton;
+    private String artist;
+    private String title;
+
+    //public String getArtist() {return artistEditTxt.getText().toString().trim();}
+    //public String getSong() {return songEditTxt.getText().toString().trim();}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,37 +60,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onClick(View v) {
         if (v == searchButton) {
-            String artist = artistEditTxt.getText().toString();
-            String title = songEditTxt.getText().toString();
+            artist = artistEditTxt.getText().toString().trim();
+            title = songEditTxt.getText().toString().trim();
             if (title.length() > 0 && artist.length() > 0) {
-                Utilities.createStorageDir(MainActivity.this, "streaming");
-                Consumer c = new Consumer(artist + "," + title, streamingPath.getPath());
-                if (c.run() == 0) {
-                    Intent intent = new Intent(getBaseContext(), PlayerActivity.class);
-                    intent.putExtra("Artist_Name", artist);
-                    intent.putExtra("Song_Name", title);
-                    intent.putExtra("Path", streamingPath.getPath());
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(MainActivity.this, "Error: Song not available!", Toast.LENGTH_SHORT).show();
-                }
+                ConsumerTask ct = new ConsumerTask(MainActivity.this.getBaseContext());
+                ct.execute(artist, title, streamingPath.getPath());
+                /*AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        Consumer c = new Consumer(artist + "," + title, streamingPath.getPath());
+                        if (c.run() == 0) {
+                            Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
+                            intent.putExtra("Artist_Name", artist);
+                            intent.putExtra("Song_Name", title);
+                            intent.putExtra("Path", streamingPath.getPath());
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Error: Song not available!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });*/
             }
-        }
-        if (v == libraryButton) {
-            Intent intent = new Intent(this, DownloadActivity.class);
-            startActivity(intent);
+
+            if (v == libraryButton) {
+                Intent intent = new Intent(this, DownloadActivity.class);
+                startActivity(intent);
+            }
         }
     }
 
-
     private void requestAppPermissions() {
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
             return;
-        }
 
-        if (hasReadPermissions() && hasWritePermissions()) {
+        if (hasReadPermissions() && hasWritePermissions())
             return;
-        }
 
         ActivityCompat.requestPermissions(this,
                 new String[] {
