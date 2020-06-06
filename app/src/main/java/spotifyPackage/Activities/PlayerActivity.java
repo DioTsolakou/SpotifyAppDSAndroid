@@ -1,6 +1,7 @@
 package spotifyPackage.Activities;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,7 +26,6 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     private TextView songTxt;
     private TextView albumTxt;
     private ImageView songImage;
-    private ImageView playButtonImage;
     private Button playButton;
     private Button backwardsButton;
     private Button forwardButton;
@@ -43,9 +43,9 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         mediaPlayer = new MediaPlayer();
 
-        /*artistName = getIntent().getStringExtra("Artist_Name");
+        artistName = getIntent().getStringExtra("Artist_Name");
         songName = getIntent().getStringExtra("Song_Name");
-        path = getIntent().getStringExtra("Path");*/
+        path = getIntent().getStringExtra("Path");
 
         songImage = findViewById(R.id.songImage);
         songImage.setImageResource(R.drawable.noimage);
@@ -79,7 +79,7 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
 
         seekbar = findViewById(R.id.seekBar);
         seekbar.setMax(mediaPlayer.getDuration()/1000);
-        /*seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
             {
@@ -106,12 +106,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
                     mediaPlayer.seekTo(seekBar.getProgress());
                 }
             }
-        });*/
+        });
 
         //check if given path is downloadPath
-        /*Utilities.playSong(mediaPlayer, songName, path.equals(Utilities.downloadPath.getPath()));
+        Utilities.playSong(mediaPlayer, songName, path.equals(Utilities.downloadPath.getPath()));
         buttonState = true;
-        playButtonImage.setImageResource(R.drawable.pausebutton);*/
+        playButton.setBackgroundResource(R.drawable.pausebutton);
     }
 
     @Override
@@ -137,12 +137,12 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         if (v == playButton) {
             if (!buttonState) {
-                playButtonImage.setImageResource(R.drawable.pausebutton);
+                playButton.setBackgroundResource(R.drawable.pausebutton);
                 mediaPlayer.pause();
                 position = mediaPlayer.getCurrentPosition();
             }
             else {
-                playButtonImage.setImageResource(R.drawable.playbutton);
+                playButton.setBackgroundResource(R.drawable.playbutton);
                 mediaPlayer.seekTo(position);
                 mediaPlayer.start();
             }

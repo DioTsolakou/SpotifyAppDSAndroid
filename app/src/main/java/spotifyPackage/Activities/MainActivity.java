@@ -30,9 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String artist;
     private String title;
 
-    //public String getArtist() {return artistEditTxt.getText().toString().trim();}
-    //public String getSong() {return songEditTxt.getText().toString().trim();}
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,36 +56,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void onClick(View v) {
+        if (v == libraryButton) {
+            Intent intent = new Intent(MainActivity.this, DownloadActivity.class);
+            startActivity(intent);
+        }
         if (v == searchButton) {
             artist = artistEditTxt.getText().toString().trim();
             title = songEditTxt.getText().toString().trim();
             if (title.length() > 0 && artist.length() > 0) {
                 ConsumerTask ct = new ConsumerTask(MainActivity.this.getBaseContext());
                 ct.execute(artist, title, streamingPath.getPath());
-                /*Consumer c = new Consumer(artist + "," + title, streamingPath.getPath());
-                c.run();
-                while(c.getExit() == 999);
-                System.out.println(c.getExit());*/
-                /*AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Consumer c = new Consumer(artist + "," + title, streamingPath.getPath());
-                        if (c.run() == 0) {
-                            Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
-                            intent.putExtra("Artist_Name", artist);
-                            intent.putExtra("Song_Name", title);
-                            intent.putExtra("Path", streamingPath.getPath());
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(MainActivity.this, "Error: Song not available!", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });*/
-            }
-
-            if (v == libraryButton) {
-                Intent intent = new Intent(this, DownloadActivity.class);
-                startActivity(intent);
             }
         }
     }
