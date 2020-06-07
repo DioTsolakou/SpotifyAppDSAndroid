@@ -17,13 +17,13 @@ public class Node {
     protected int port;
 
     public Node() {
-        //try {
-            //this.ip = InetAddress.getLocalHost().getHostAddress();
-            this.ip = "127.0.0.0";
-        //}
-        /*/catch (UnknownHostException e) {
+        try {
+            this.ip = InetAddress.getLocalHost().getHostAddress();
+            //this.ip = "127.0.0.0"; is used for local tests
+        }
+        catch (UnknownHostException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     public Node(int port){

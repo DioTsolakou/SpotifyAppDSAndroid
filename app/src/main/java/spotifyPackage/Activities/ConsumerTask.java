@@ -27,7 +27,7 @@ public class ConsumerTask extends AsyncTask<Object, Void, Integer> {
 
     public ConsumerTask(Context c) {
         context = c;
-        ip = "10.0.2.2";
+        ip = "192.168.56.1";
         port = 9999;
     }
 
@@ -53,6 +53,7 @@ public class ConsumerTask extends AsyncTask<Object, Void, Integer> {
             sendData(new Request("songPull", artist + "," + title));
 
             while (true) {
+                Thread.sleep(350);
                 synchronized (input) {
                     message = (Request) input.readObject();
                 }

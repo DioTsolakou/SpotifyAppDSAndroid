@@ -85,13 +85,18 @@ public class PublisherRunnable extends PublisherImplementation implements Runnab
         char c = '1';
 
         System.out.println("Sending chunks ...");
-        for (int offset = 0; offset < fileBytes.length; offset += 512000) {
-            int len = (offset + 512000 < fileBytes.length ? 512000 : fileBytes.length - offset);
+        for (int offset = 0; offset < fileBytes.length; offset += 1000000) {
+            int len = (offset + 1000000 < fileBytes.length ? 1000000 : fileBytes.length - offset);
             outputBytes = new byte[len];
             System.arraycopy(fileBytes, offset, outputBytes, 0, len);
-            if (offset + 512000 >= fileBytes.length) c = '0';
+            if (offset + 1000000 >= fileBytes.length) c = '0';
             MusicFile mf =  new MusicFile(title, artist, album, genre, outputBytes);
             sendData (new Request("musicData " + c, mf ));
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

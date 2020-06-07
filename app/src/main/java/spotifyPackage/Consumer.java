@@ -35,7 +35,7 @@ public class Consumer extends Node {
         //String[] brokerDetails = selectFirstBrokerDetails(brokersDir);
         //this.ip = brokerDetails[0];
         //this.port = Integer.parseInt(brokerDetails[1]);this.ip = brokerDetails[0];
-        this.ip = "10.0.2.2";
+        this.ip = "192.168.56.1"; //needs to be changed from here if home IP is changed
         this.port = 9999;
         this.artistSong = artistSong;
         this.path = path;

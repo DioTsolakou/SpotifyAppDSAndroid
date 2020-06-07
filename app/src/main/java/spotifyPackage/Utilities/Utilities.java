@@ -67,6 +67,7 @@ public class Utilities {
                 id3v2TagFinal.setAlbum(id3v2TagFirst.getAlbum());
                 id3v2TagFinal.setYear(id3v2TagFirst.getYear());
                 id3v2TagFinal.setTitle(id3v2TagFirst.getTitle());
+                id3v2TagFinal.setAlbumImage(id3v2TagFirst.getAlbumImage(), id3v2TagFirst.getAlbumImageMimeType());
             } catch (Exception e) {
                 //e.printStackTrace();
             }
