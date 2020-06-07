@@ -3,15 +3,12 @@ package spotifyPackage.Activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
 import spotifyPackage.Consumer;
 import spotifyPackage.Request;
 import spotifyPackage.Utilities.Utilities;
@@ -21,72 +18,64 @@ public class ConsumerTask extends AsyncTask<Object, Void, Integer> {
     String artist;
     String title;
     String path;
+    Socket connection;
+    ObjectOutputStream output;
+    ObjectInputStream input;
+    Request message;
+    String ip;
+    int port;
 
     public ConsumerTask(Context c) {
         context = c;
+        ip = "10.0.2.2";
+        port = 9999;
     }
+
+    public ConsumerTask(Context c, String ip, int port) {
+        context = c;
+        this.ip = ip;
+        this.port = port;
+    }
+
 
     @Override
     protected Integer doInBackground(Object... args) {
-        artist = (String)args[0];
-        title = (String)args[1];
-        path = (String)args[2] + File.separator;
+        artist = (String) args[0];
+        title = (String) args[1];
+        path = (String) args[2] + File.separator;
 
-        String ip = "10.0.2.2";
-        int port = 9999;
         Consumer c = new Consumer(artist + "," + title, path);
-
-        Socket connection;
-        ObjectOutputStream output;
-        ObjectInputStream input;
 
         try {
             connection = new Socket(ip, port);
 
-            output = new ObjectOutputStream(connection.getOutputStream());
-            output.flush();
-            input = new ObjectInputStream(connection.getInputStream());
-            output.writeObject(new Request("songPull", artist + "," + title));
-            output.flush();
+            getStreams();
+            sendData(new Request("songPull", artist + "," + title));
 
             while (true) {
-                Request message = (Request) input.readObject();
+                synchronized (input) {
+                    message = (Request) input.readObject();
+                }
                 if (message.getHeader().equals("newConnection")) {
-                    output.writeObject(new Request("newConnectionAck", ""));
-                    output.flush();
-
-                    output.close();
-                    input.close();
-                    connection.close();
+                    sendData(new Request("newConnectionAck", ""));
+                    closeConnection();
 
                     String[] tempArray = ((String) message.getData()).split(",", 2);
                     ip = tempArray[0];
                     if (ip.equals("127.0.0.1"))
                         ip = "10.0.2.2";
                     port = Integer.parseInt(tempArray[1]);
-                    int i = 0;
-                    while (i < 2) {
-                        try {
-                            Thread.sleep(500);
-                            connection = new Socket(ip, port);
-                            if (connection.isConnected()) break;
-                        }
-                        catch (Exception e) {
-                            i++;
-                            System.out.println("Failed times: " + i);
-                            Thread.sleep(500);
-                        }
+                    if (connection.isClosed()) {
+                        //connection = new Socket(ip, port);
+                        ConsumerTask ct = new ConsumerTask(context, ip, port);
+                        ct.execute(artist, title, path);
+                        System.out.println("After AsyncTask execute");
+                        return 1;
                     }
-                    //if (i == 15) return -1;
-
-                    output = new ObjectOutputStream(connection.getOutputStream());
-                    output.flush();
-                    input = new ObjectInputStream(connection.getInputStream());
-                    output.writeObject(new Request("songPull", artist + "," + title));
-                    output.flush();
+                    getStreams();
+                    sendData(new Request("songPull", artist + "," + title));
                 } else if (message.getHeader().contains("musicData")) {
-                    output.writeObject(new Request("songPull", artist + "," + title));
-                    output.flush();
+                    sendData(new Request("musicDataAck", ""));
                     c.saveChunks(message);
                     if (message.getHeader().contains("0")) break;
                 } else if (message.getHeader().equals("artistUnavailable")) {
@@ -96,9 +85,7 @@ public class ConsumerTask extends AsyncTask<Object, Void, Integer> {
                 }
             }
             Utilities.joinChunks(artist + "@" + title);
-            output.close();
-            input.close();
-            connection.close();
+            closeConnection();
             return 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -107,7 +94,8 @@ public class ConsumerTask extends AsyncTask<Object, Void, Integer> {
     }
 
     @Override
-    protected void onProgressUpdate(Void... progress) {}
+    protected void onProgressUpdate(Void... progress) {
+    }
 
     @Override
     protected void onPostExecute(Integer result) {
@@ -119,8 +107,37 @@ public class ConsumerTask extends AsyncTask<Object, Void, Integer> {
             intent.putExtra("Song_Name", title);
             intent.putExtra("Path", path);
             context.startActivity(intent);
-        } else {
+        } else if (result == -1) {
             Toast.makeText(context, "Error: Song not available!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    protected void getStreams() throws IOException {
+        output = new ObjectOutputStream(connection.getOutputStream());
+        output.flush();
+        input = new ObjectInputStream(connection.getInputStream());
+    }
+
+    protected void sendData(Request message) {
+        try {
+            output.writeObject(message);
+            output.flush();
+        }
+        catch (IOException ioException) {
+            System.out.println("\nError writing object");
+            closeConnection();
+        }
+    }
+
+    protected void closeConnection() {
+        System.out.println("Closing connection");
+        try {
+            output.close();
+            input.close();
+            connection.close();
+        }
+        catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 }

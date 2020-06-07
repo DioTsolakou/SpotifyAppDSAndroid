@@ -28,7 +28,7 @@ public class Utilities {
     public static ArrayList<File> chunks = new ArrayList<>();
 
     public static void joinChunks(String song) {
-        String dir = streamingPath.getPath();
+        String dir = streamingPath.getPath() + File.separator;
         File[] listOfFiles = new File(dir).listFiles();
         chunks.clear();
 
@@ -56,8 +56,8 @@ public class Utilities {
             }
         }
 
-        String firstFile = streamingPath.getPath() + song + "_0.mp3";
-        String finalFile = streamingPath.getPath() + song + "_final.mp3";
+        String firstFile = streamingPath.getPath() + File.separator + song + "_0.mp3";
+        String finalFile = streamingPath.getPath()+ File.separator + song + "_final.mp3";
         try (OutputStream fos = new FileOutputStream(finalFile)) {
             fos.write(bytes);
             try {
@@ -89,7 +89,8 @@ public class Utilities {
         //joinChunks(songName);
         try {
             File path = downloaded ? downloadPath: streamingPath;
-            mp.setDataSource(path.getPath() + songName + "_final.mp3");
+            mp.setDataSource(path.getPath() + File.separator + songName + "_final.mp3");
+            mp.prepareAsync();
             mp.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -146,7 +147,7 @@ public class Utilities {
 
         for (File f : listOfFiles) {
             if (f.getName().equals(songName + "_final.mp3")) {
-                if (f.renameTo(new File(downloadPath + "\\" + songName + "_final.mp3"))) {
+                if (f.renameTo(new File(downloadPath + File.separator + songName + "_final.mp3"))) {
                     f.delete();
                     return "Download successful!";
                 }

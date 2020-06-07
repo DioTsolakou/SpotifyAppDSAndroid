@@ -116,7 +116,7 @@ public class Consumer extends Node {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        setMetaData(f);
+        if (counter == 0) setMetaData(f);
     }
 
     private void storeMetaData(MusicFile song) {

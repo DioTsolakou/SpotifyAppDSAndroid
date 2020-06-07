@@ -13,10 +13,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.File;
+import java.io.IOException;
+
 import spotifyPackage.R;
 import spotifyPackage.Utilities.Utilities;
 
-public class PlayerActivity extends AppCompatActivity implements View.OnClickListener {
+public class PlayerActivity extends AppCompatActivity implements View.OnClickListener, MediaPlayer.OnPreparedListener {
 
     private MediaPlayer mediaPlayer;
     private int position;
@@ -41,11 +45,19 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        mediaPlayer = new MediaPlayer();
-
         artistName = getIntent().getStringExtra("Artist_Name");
         songName = getIntent().getStringExtra("Song_Name");
         path = getIntent().getStringExtra("Path");
+
+        mediaPlayer = new MediaPlayer();
+
+        try {
+            mediaPlayer.setDataSource(path + File.separator + artistName + "@" + songName + "_final.mp3");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mediaPlayer.setOnPreparedListener(this);
+        mediaPlayer.prepareAsync();
 
         songImage = findViewById(R.id.songImage);
         songImage.setImageResource(R.drawable.noimage);
@@ -109,7 +121,13 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
         });
 
         //check if given path is downloadPath
-        Utilities.playSong(mediaPlayer, songName, path.equals(Utilities.downloadPath.getPath()));
+        //Utilities.playSong(mediaPlayer, artistName + "@" + songName, path.equals(Utilities.downloadPath.getPath()));
+/*        try {
+            mediaPlayer.setDataSource(path + File.separator + songName + "_final.mp3");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
         buttonState = true;
         playButton.setBackgroundResource(R.drawable.pausebutton);
     }
@@ -130,7 +148,11 @@ public class PlayerActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
 
+    @Override
+    public void onPrepared(MediaPlayer mp) {
+        mp.start();
     }
 
     @Override
